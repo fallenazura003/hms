@@ -1,8 +1,7 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import '@mantine/core/styles.css'
-import {Button, createTheme, MantineProvider} from '@mantine/core';
+import { createTheme, MantineProvider} from '@mantine/core';
 import AppRoutes from "./Routes/AppRoutes";
 const theme = createTheme({
   focusRing:"never",
