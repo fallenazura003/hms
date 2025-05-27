@@ -1,21 +1,52 @@
+// Header.jsx
 import React from 'react';
 import ProfileMenu from "./ProfileMenu";
-import {ActionIcon} from "@mantine/core";
-import {IconBellRinging, IconLayoutSidebarLeftCollapse} from "@tabler/icons-react";
+import { ActionIcon, Button } from "@mantine/core";
+import { IconBellRinging, IconLayoutSidebarLeftCollapse } from "@tabler/icons-react";
+import { Link } from "react-router-dom";
 
 function Header() {
     return (
-        <div className={'bg-cyan-200 w-full h-16 flex justify-between px-5 items-center'}>
-            <ActionIcon variant="transparent" size={"lg"} aria-label="Settings">
-                <IconLayoutSidebarLeftCollapse style={{ width: '90%', height: '90%' }} stroke={1.5} />
-            </ActionIcon>
-            <div className={'flex gap-5 items-center'}>
-                <ActionIcon variant="transparent" size={"md"} aria-label="Settings">
-                    <IconBellRinging style={{ width: '90%', height: '90%' }} stroke={2} />
+        <div className={'bg-slate-800 shadow-md h-16 flex justify-between px-6 items-center text-slate-300'}>
+            {/* Nút collapse sidebar */}
+            <div>
+                <ActionIcon
+                    variant="transparent"
+                    size="lg" // Mantine 'lg' size (~36px-40px)
+                    aria-label="Collapse Sidebar"
+                    className="text-slate-300 hover:text-white hover:bg-slate-700 transition-colors duration-200"
+                >
+                    {/* Đổi từ style sang prop size của Tabler Icons */}
+                    <IconLayoutSidebarLeftCollapse size={240} stroke={1.5} /> {/* Kích thước 24px là phổ biến và hiển thị rõ */}
                 </ActionIcon>
-                <ProfileMenu/>
             </div>
 
+
+            {/* Các thành phần bên phải */}
+            <div className={'flex gap-4 items-center'}>
+                <Link to={"/login"}>
+                    <Button
+                        variant="filled"
+                        color="primary"
+                        className="bg-primary-500 hover:bg-primary-600 text-white font-medium px-4 py-2 rounded-md transition-colors duration-200"
+                    >
+                        Đăng nhập
+                    </Button>
+                </Link>
+
+                <ActionIcon
+                    variant="transparent"
+                    size="lg"
+                    aria-label="Notifications"
+                    className="text-slate-300 hover:text-white hover:bg-slate-700 transition-colors duration-200"
+                >
+                    {/* Đổi từ style sang prop size của Tabler Icons */}
+                    <IconBellRinging size={24} stroke={2} />
+                </ActionIcon>
+
+
+                <ProfileMenu />
+            </div>
         </div>
     );
 }

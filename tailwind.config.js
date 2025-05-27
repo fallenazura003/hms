@@ -41,6 +41,7 @@ module.exports = {
         sidebarActiveBg: '#0EA5E9', // Màu nền khi active (màu primary-500)
         sidebarActiveText: '#FFFFFF', // Màu chữ khi active
         accentRed: '#EF4444', // Màu đỏ cho logo nhịp tim
+        formBg: 'rgba(30, 41, 59, 0.9)', // slate-800 với opacity 90%
       },
     },
   },
