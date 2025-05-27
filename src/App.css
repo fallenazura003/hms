@@ -27,7 +27,28 @@
 .App-link {
   color: #61dafb;
 }
+/* Kích thước thanh cuộn */
+::-webkit-scrollbar {
+  width: 10px; /* Chiều rộng của thanh cuộn dọc */
+  height: 10px; /* Chiều cao của thanh cuộn ngang (ít dùng cho sidebar) */
+}
 
+/* Nền của thanh cuộn */
+::-webkit-scrollbar-track {
+  background: #334155; /* Màu nền của track (ví dụ: slate-700) */
+  border-radius: 5px; /* Bo tròn góc của track */
+}
+
+/* Phần "thumb" của thanh cuộn (phần kéo được) */
+::-webkit-scrollbar-thumb {
+  background: #0EA5E9; /* Màu của thumb (ví dụ: primary-500) */
+  border-radius: 5px; /* Bo tròn góc của thumb */
+}
+
+/* Khi hover lên thumb */
+::-webkit-scrollbar-thumb:hover {
+  background: #0284C7; /* Màu của thumb khi hover (ví dụ: primary-600) */
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
