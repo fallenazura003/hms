@@ -1,4 +1,4 @@
-import {Menu, Button, Text, Avatar} from '@mantine/core';
+import {Menu, Text, Avatar} from '@mantine/core';
 import {
     IconSettings,
     IconSearch,
