@@ -39,7 +39,7 @@ const LoginPage = () => {
     const handleSubmit = (values: { email: any; password: any; }) => {
         console.log("Form values:", values);
 
-        alert(`Đăng nhập với Email: ${values.email}, Mật khẩu: ${values.password}`);
+        // alert(`Đăng nhập với Email: ${values.email}, Mật khẩu: ${values.password}`);
     };
 
     return (

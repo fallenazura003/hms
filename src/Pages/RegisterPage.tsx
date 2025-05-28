@@ -1,29 +1,28 @@
+// RegisterPage.jsx
 import React from 'react';
-import { PasswordInput, TextInput, Button, Text } from "@mantine/core";
+import { PasswordInput, TextInput, Button, Text, Select } from "@mantine/core";
 import { IconHeartbeat } from "@tabler/icons-react";
-import { useForm, isEmail, isNotEmpty } from "@mantine/form"; // Import useForm và các validator
-import { Link } from "react-router-dom"; // Import Link để chuyển về trang Login
+import { useForm, isEmail, isNotEmpty } from "@mantine/form";
+import { Link } from "react-router-dom";
 
 // Định nghĩa kiểu dữ liệu cho form values của trang đăng ký
-// Việc này giúp TypeScript hiểu rõ các trường và cung cấp gợi ý/kiểm tra lỗi tốt hơn
 interface RegisterFormValues {
     username: string;
     email: string;
     password: string;
     confirmPassword: string;
+    role: 'user' | 'employee' | 'admin' | null;
 }
 
 const RegisterPage = () => {
-    // Khởi tạo useForm HOOK bên trong component
     const form = useForm<RegisterFormValues>({
         initialValues: {
             username: "",
             email: "",
             password: "",
             confirmPassword: "",
+            role: null,
         },
-
-        // Định nghĩa các quy tắc kiểm tra tính hợp lệ
         validate: {
             username: (value) => {
                 if (!isNotEmpty(value)) {
@@ -47,12 +46,12 @@ const RegisterPage = () => {
                 if (!isNotEmpty(value)) {
                     return 'Mật khẩu không được để trống';
                 }
-                if (value.length < 6) { // Ví dụ: mật khẩu tối thiểu 6 ký tự
+                if (value.length < 6) {
                     return 'Mật khẩu phải có ít nhất 6 ký tự';
                 }
                 return null;
             },
-            confirmPassword: (value, values) => { // 'values' ở đây là toàn bộ giá trị của form
+            confirmPassword: (value, values) => {
                 if (!isNotEmpty(value)) {
                     return 'Xác nhận mật khẩu không được để trống';
                 }
@@ -61,23 +60,22 @@ const RegisterPage = () => {
                 }
                 return null;
             },
+            role: (value) => (value ? null : 'Vui lòng chọn vai trò'),
         },
     });
 
-    // Hàm xử lý khi form được gửi thành công
     const handleSubmit = (values: RegisterFormValues) => {
         console.log("Form values:", values);
-        // Loại bỏ trường confirmPassword trước khi gửi lên server nếu không cần thiết
         const { confirmPassword, ...dataToSend } = values;
         console.log("Data to send to API:", dataToSend);
 
-        alert(`Đăng ký thành công với Tên: ${values.username}, Email: ${values.email}`);
+        // alert(`Đăng ký thành công với Tên: ${values.username}, Email: ${values.email}, Vai trò: ${values.role}`);
     };
 
     return (
         <div
             style={{
-                backgroundImage: 'url("/bg.jpg")', // Đảm bảo đường dẫn này đúng
+                backgroundImage: 'url("/bg.jpg")',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
@@ -95,7 +93,6 @@ const RegisterPage = () => {
                     Đăng ký tài khoản mới
                 </Text>
 
-                {/* Gắn form.onSubmit vào sự kiện onSubmit của thẻ <form> */}
                 <form className={'flex flex-col gap-y-4'} onSubmit={form.onSubmit(handleSubmit)}>
                     <TextInput
                         size="md"
@@ -107,9 +104,8 @@ const RegisterPage = () => {
                             label: 'text-slate-300 font-medium',
                             input: 'bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:border-primary-500',
                         }}
-                        // Gắn props của form vào TextInput
                         {...form.getInputProps('username')}
-                        error={form.errors.username} // Hiển thị lỗi
+                        error={form.errors.username}
                     />
 
                     <TextInput
@@ -155,6 +151,28 @@ const RegisterPage = () => {
                         error={form.errors.confirmPassword}
                     />
 
+                    {/* Dropdown menu chọn vai trò */}
+                    <Select
+                        size="md"
+                        radius="md"
+                        variant="filled"
+                        label="Vai trò"
+                        placeholder="Chọn vai trò của bạn"
+                        data={[
+                            { value: 'user', label: 'Người dùng' },
+                            { value: 'employee', label: 'Nhân viên' },
+                            { value: 'admin', label: 'Quản trị viên' },
+                        ]}
+                        classNames={{
+                            label: 'text-slate-300 font-medium',
+                            input: 'bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:border-primary-500',
+                            option: 'text-slate-300 hover:bg-slate-700 data-[selected]:!bg-primary-500 data-[selected]:!text-white', // Đã sửa 'item' thành 'option'
+                            dropdown: 'bg-slate-700 border border-slate-600',
+                        }}
+                        {...form.getInputProps('role')}
+                        error={form.errors.role}
+                    />
+
                     <Button
                         type="submit"
                         variant="filled"
@@ -162,8 +180,6 @@ const RegisterPage = () => {
                         size="md"
                         radius="md"
                         className="mt-6 bg-primary-500 hover:bg-primary-600 text-white font-semibold transition-colors duration-200"
-                        // `loading` prop có thể được sử dụng khi gửi dữ liệu
-                        // loading={form.isSubmitting}
                     >
                         Đăng ký
                     </Button>
