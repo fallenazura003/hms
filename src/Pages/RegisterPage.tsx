@@ -159,9 +159,9 @@ const RegisterPage = () => {
                         label="Vai trò"
                         placeholder="Chọn vai trò của bạn"
                         data={[
-                            { value: 'user', label: 'Người dùng' },
-                            { value: 'employee', label: 'Nhân viên' },
-                            { value: 'admin', label: 'Quản trị viên' },
+                            { value: 'PATIENT', label: 'Bệnh nhân' },
+                            { value: 'DOCTOR', label: 'Bác sĩ' },
+                            { value: 'ADMIN', label: 'Quản trị viên' },
                         ]}
                         classNames={{
                             label: 'text-slate-300 font-medium',
