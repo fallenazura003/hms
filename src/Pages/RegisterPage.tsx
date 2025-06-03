@@ -1,13 +1,15 @@
 // RegisterPage.jsx
 import React from 'react';
-import { PasswordInput, TextInput, Button, Text, Select } from "@mantine/core";
-import { IconHeartbeat } from "@tabler/icons-react";
-import { useForm, isEmail, isNotEmpty } from "@mantine/form";
-import { Link } from "react-router-dom";
+import {PasswordInput, TextInput, Button, Text, Select} from "@mantine/core";
+import {IconHeartbeat} from "@tabler/icons-react";
+import {useForm, isEmail, isNotEmpty} from "@mantine/form";
+import {Link, useNavigate} from "react-router-dom";
+import {registerUser} from "../Service/UserService";
+import {errorNotification, successNotification} from "../Utility/NotificationUtil";
 
 // Định nghĩa kiểu dữ liệu cho form values của trang đăng ký
 interface RegisterFormValues {
-    username: string;
+    name: string;
     email: string;
     password: string;
     confirmPassword: string;
@@ -15,21 +17,20 @@ interface RegisterFormValues {
 }
 
 const RegisterPage = () => {
+    const navigate = useNavigate();
+    const [loading, setLoading] = React.useState(false);
     const form = useForm<RegisterFormValues>({
         initialValues: {
-            username: "",
+            name: "",
             email: "",
             password: "",
             confirmPassword: "",
             role: null,
         },
         validate: {
-            username: (value) => {
+            name: (value) => {
                 if (!isNotEmpty(value)) {
-                    return 'Tên người dùng không được để trống';
-                }
-                if (value.length < 3) {
-                    return 'Tên người dùng phải có ít nhất 3 ký tự';
+                    return 'Tên không được để trống';
                 }
                 return null;
             },
@@ -46,8 +47,10 @@ const RegisterPage = () => {
                 if (!isNotEmpty(value)) {
                     return 'Mật khẩu không được để trống';
                 }
-                if (value.length < 6) {
-                    return 'Mật khẩu phải có ít nhất 6 ký tự';
+                // Giả sử backend yêu cầu 8-20 ký tự và chứa ít nhất 1 chữ hoa, 1 chữ thường, 1 số, 1 ký tự đặc biệt
+                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
+                if (!passwordRegex.test(value)) {
+                    return 'Mật khẩu (8-20 ký tự) phải chứa ít nhất 1 chữ hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt (@$!%*?&).';
                 }
                 return null;
             },
@@ -65,13 +68,20 @@ const RegisterPage = () => {
     });
 
     const handleSubmit = (values: RegisterFormValues) => {
+        setLoading(true);
         console.log("Form values:", values);
-        const { confirmPassword, ...dataToSend } = values;
+        const {confirmPassword, ...dataToSend} = values;
         console.log("Data to send to API:", dataToSend);
+        // Sửa từ 'values' thành 'dataToSend'
+        registerUser(dataToSend).then((_data) => { // <-- Đã sửa
+            successNotification("Đăng ký tài khoản thành công!")
+            setLoading(false);
+            navigate("/login")
+        }).catch((error: any) => {
+            errorNotification(error.response.data.errorMessage);
+        }).finally(()=>setLoading(false));
 
-        // alert(`Đăng ký thành công với Tên: ${values.username}, Email: ${values.email}, Vai trò: ${values.role}`);
     };
-
     return (
         <div
             style={{
@@ -83,9 +93,10 @@ const RegisterPage = () => {
             }}
             className="w-full flex justify-center items-center p-4"
         >
-            <div className={'w-full max-w-sm md:max-w-md bg-slate-800 bg-opacity-90 backdrop-blur-sm rounded-xl shadow-2xl p-8 sm:p-10 text-slate-300'}>
+            <div
+                className={'w-full max-w-sm md:max-w-md bg-slate-800 bg-opacity-90 backdrop-blur-sm rounded-xl shadow-2xl p-8 sm:p-10 text-slate-300'}>
                 <div className={'flex items-center justify-center gap-2 mb-6'}>
-                    <IconHeartbeat size={40} stroke={2.5} className={'text-red-500'} />
+                    <IconHeartbeat size={40} stroke={2.5} className={'text-red-500'}/>
                     <span className={'font-bold text-3xl text-white'}>HMS</span>
                 </div>
 
@@ -94,18 +105,20 @@ const RegisterPage = () => {
                 </Text>
 
                 <form className={'flex flex-col gap-y-4'} onSubmit={form.onSubmit(handleSubmit)}>
+
+                    {/* TRƯỜNG NAME */}
                     <TextInput
                         size="md"
                         radius="md"
                         variant="filled"
-                        label="Tên người dùng"
-                        placeholder="Nhập tên của bạn"
+                        label="Tên đầy đủ"
+                        placeholder="Nhập tên đầy đủ của bạn"
                         classNames={{
                             label: 'text-slate-300 font-medium',
                             input: 'bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:border-primary-500',
                         }}
-                        {...form.getInputProps('username')}
-                        error={form.errors.username}
+                        {...form.getInputProps('name')}
+                        error={form.errors.name}
                     />
 
                     <TextInput
@@ -159,14 +172,14 @@ const RegisterPage = () => {
                         label="Vai trò"
                         placeholder="Chọn vai trò của bạn"
                         data={[
-                            { value: 'PATIENT', label: 'Bệnh nhân' },
-                            { value: 'DOCTOR', label: 'Bác sĩ' },
-                            { value: 'ADMIN', label: 'Quản trị viên' },
+                            {value: 'PATIENT', label: 'Bệnh nhân'},
+                            {value: 'DOCTOR', label: 'Bác sĩ'},
+                            {value: 'ADMIN', label: 'Quản trị viên'},
                         ]}
                         classNames={{
                             label: 'text-slate-300 font-medium',
                             input: 'bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:border-primary-500',
-                            option: 'text-slate-300 hover:bg-slate-700 data-[selected]:!bg-primary-500 data-[selected]:!text-white', // Đã sửa 'item' thành 'option'
+                            option: 'text-slate-300 hover:bg-slate-700 data-[selected]:!bg-primary-500 data-[selected]:!text-white',
                             dropdown: 'bg-slate-700 border border-slate-600',
                         }}
                         {...form.getInputProps('role')}
@@ -174,6 +187,7 @@ const RegisterPage = () => {
                     />
 
                     <Button
+                        loading={loading}
                         type="submit"
                         variant="filled"
                         color="primary"
@@ -187,7 +201,8 @@ const RegisterPage = () => {
 
                 <Text className="text-center text-sm text-slate-400 mt-6">
                     Đã có tài khoản?{' '}
-                    <Link to="/login" className="text-primary-400 hover:text-primary-500 font-medium transition-colors duration-200">
+                    <Link to="/login"
+                          className="text-primary-400 hover:text-primary-500 font-medium transition-colors duration-200">
                         Đăng nhập ngay
                     </Link>
                 </Text>

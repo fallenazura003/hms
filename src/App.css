@@ -57,3 +57,21 @@
     transform: rotate(360deg);
   }
 }
+.mantine-Notification-root {
+  position: fixed !important; /* Buộc nó là fixed */
+  top: 20px !important;       /* Đặt lại vị trí top mong muốn (hoặc giá trị khác) */
+  left: 50% !important;       /* Căn giữa */
+  transform: translateX(-50%) !important; /* Đảm bảo căn giữa */
+  bottom: auto !important;    /* Đảm bảo nó không bị đẩy xuống dưới */
+  right: auto !important;     /* Đảm bảo nó không bị lệch sang phải */
+}
+
+/* Hoặc nếu bạn muốn nhắm mục tiêu vào container gốc (ít khả năng hơn) */
+/*.mantine-Notifications-root[data-position="top-center"] {*/
+/*  position: fixed !important;*/
+/*  top: 20px !important;*/
+/*  left: 50% !important;*/
+/*  transform: translateX(-50%) !important;*/
+/*  bottom: auto !important;*/
+/*  right: auto !important;*/
+/*}*/

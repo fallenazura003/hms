@@ -2,9 +2,14 @@ import React from 'react';
 import { PasswordInput, TextInput, Button, Text } from "@mantine/core";
 import { IconHeartbeat } from "@tabler/icons-react";
 import { useForm } from "@mantine/form"; // Đảm bảo bạn đã cài đặt @mantine/form
-import { isEmail, isNotEmpty } from '@mantine/form'; // Các validator hữu ích của Mantine
+import { isEmail, isNotEmpty } from '@mantine/form';
+import {loginUser} from "../Service/UserService";
+import {errorNotification, successNotification} from "../Utility/NotificationUtil";
+import {useNavigate} from "react-router-dom"; // Các validator hữu ích của Mantine
 
 const LoginPage = () => {
+    const navigate = useNavigate();
+    const [loading, setLoading] = React.useState(false);
     // Khởi tạo useForm HOOK bên trong component
     const form = useForm({
         initialValues: {
@@ -37,9 +42,15 @@ const LoginPage = () => {
 
     // Hàm xử lý khi form được gửi thành công
     const handleSubmit = (values: { email: any; password: any; }) => {
-        console.log("Form values:", values);
-
-        // alert(`Đăng nhập với Email: ${values.email}, Mật khẩu: ${values.password}`);
+        setLoading(true);
+        loginUser(values).then((data) => {
+            console.log(data);
+            successNotification("Đăng nhập thành công!")
+            setLoading(false);
+            navigate("/dashboard")
+        }).catch((error: any) => {
+            errorNotification(error?.response?.data?.errorMessage);
+        }).finally(()=>setLoading(false))
     };
 
     return (
@@ -96,6 +107,7 @@ const LoginPage = () => {
                     />
 
                     <Button
+                        loading={loading}
                         type="submit"
                         variant="filled"
                         color="primary"
